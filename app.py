@@ -12,6 +12,7 @@
 # ///
 
 import hashlib
+import os
 import subprocess
 import gradio as gr
 import fitz  # PyMuPDF
@@ -131,4 +132,7 @@ with gr.Blocks(title="Cover Letter") as demo:
 if __name__ == "__main__":
     # Install playwright browsers on startup
     subprocess.run(["playwright", "install", "chromium"])
-    demo.launch()
+    if os.environ.get("PRODUCTION"):
+        demo.queue().launch(server_name="0.0.0.0", server_port=80)
+    else:
+        demo.launch()
