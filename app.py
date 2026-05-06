@@ -28,7 +28,15 @@ redis_client = redis.Redis(host="localhost", port=6379, decode_responses=True)
 
 # Configuration
 MODEL_ID = "anthropic/claude-haiku-4-5-20251001"
-DEFAULT_PROMPT = "Write a short and concise application cover letter."
+DEFAULT_PROMPT = """#Task
+
+Write a short and concise application cover letter.
+
+## Notes
+- Only write the text, no headers
+"""
+
+CSS = "footer{display:none !important}"
 
 
 async def get_model():
@@ -116,7 +124,7 @@ with gr.Blocks(title="Cover Letter") as demo:
                 placeholder="https://company.com/jobs/123...",
             )
             cv_upload = gr.File(label="Upload CV (PDF)", file_types=[".pdf"])
-            prompt_input = gr.Textbox(label="Prompt", value=DEFAULT_PROMPT, lines=3)
+            prompt_input = gr.Textbox(label="Prompt", value=DEFAULT_PROMPT, lines=5)
             submit_btn = gr.Button("Generate Letter", variant="primary")
 
         with gr.Column():
@@ -133,6 +141,6 @@ if __name__ == "__main__":
     # Install playwright browsers on startup
     subprocess.run(["playwright", "install", "chromium"])
     if os.environ.get("PRODUCTION"):
-        demo.queue().launch(server_name="0.0.0.0", server_port=80)
+        demo.queue().launch(server_name="0.0.0.0", server_port=80, css=CSS)
     else:
-        demo.launch()
+        demo.launch(css=CSS)
